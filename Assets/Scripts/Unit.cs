@@ -11,9 +11,13 @@ public class Unit : MonoBehaviour
     // On update the charcter will move to a set position when T is pressed according to our movespeed
     private void Update()
     {
-        Vector3 moveDirection = (targetPosition - transform.position).normalized;
-        float moveSpeed = 4f;
-        transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        float stoppingDistance = .1f;
+        if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
+        {
+            Vector3 moveDirection = (targetPosition - transform.position).normalized;
+            float moveSpeed = 4f;
+            transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        }
 
         if (Input.GetKeyDown(KeyCode.T))
         {
