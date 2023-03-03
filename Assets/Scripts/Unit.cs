@@ -5,28 +5,45 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
 
+    // Getting the reference of the Animator
+    [SerializeField]private Animator unitAnimator;
     // Target Spot for the model to move to
     private Vector3 targetPosition;
+
+    private void Awake() 
+    {
+        targetPosition = transform.position;
+    }
 
     // On update the charcter will move to a set position when T is pressed according to our movespeed
     private void Update()
     {
         float stoppingDistance = .1f;
+
+        // Checks to see if the distance from the unit to its targets spot is greater than 0
         if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
         {
+            // Determining the direction and the speed that the unit shall reach its end goal
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
             float moveSpeed = 4f;
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
-        }
 
-        if (Input.GetKeyDown(KeyCode.T))
+            // Rotation of the model when it moves to create a smooth transtation between animation states
+            float rotateSpeed = 10f;
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
+
+            // Setting the bool for the animator on the unit
+            unitAnimator.SetBool("IsWalking", true);
+        }
+        else
         {
-            Move(new Vector3(4, 0, 4));
+            // Setting the bool for the animator on the unit
+            unitAnimator.SetBool("IsWalking", false);
         }
     }
 
     // Changes the target vector for the model to move to
-    private void Move(Vector3 targetPosition)
+    public void Move(Vector3 targetPosition)
     {
         this.targetPosition = targetPosition;
     }
