@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,14 @@ public class SpinAction : BaseAction
 
     // The current amount of degrees that character has spun
     private float totalSpinAmount;
+    // Delegate to notify the Unit Action System that a unit is done spinning
+    /*
+    * Alternate way where you can build the delegate versus using Action for a void function and Func for a return
+    * public delegate void SpinCompleteDelegate();
+    * private SpinCompleteDelegate onSpinComplete; 
+    *
+    *private Action onSpinComplete;
+    */
 
     //* Update is called once per frame
     private void Update()
@@ -32,12 +41,15 @@ public class SpinAction : BaseAction
         if (totalSpinAmount >= 360)
         {
             isActive = false;
+            onActionComplete();
         }
     }
 
     //* Causes the unit that this is ran on to start spinning
-    public void Spin()
+    // @param onSpinComplete a delegate for keeping track when the action finishes
+    public void Spin(Action onActionComplete)
     {
+        this.onActionComplete = onActionComplete;
         isActive = true;
         totalSpinAmount = 0f;
     }

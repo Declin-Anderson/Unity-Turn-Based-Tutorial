@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,6 +52,7 @@ public class MoveAction : BaseAction
             // Setting the bool for the animator on the unit
             unitAnimator.SetBool("IsWalking", false);
             isActive = false;
+            onActionComplete();
         }
 
         // Rotation of the model when it moves to create a smooth transtation between animation states
@@ -60,9 +62,11 @@ public class MoveAction : BaseAction
 
     //* Changes the target vector for the model to move to
     // @param gridPosition the target position that the unit is going to move to
-    public void Move(GridPosition gridPosition)
+    // @param onActionComplete a delegate for letting the system know that a unit is currently moving
+    public void Move(GridPosition gridPosition, Action onActionComplete)
     {
         // Sets the target position
+        this.onActionComplete = onActionComplete;
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
         isActive = true;
     }

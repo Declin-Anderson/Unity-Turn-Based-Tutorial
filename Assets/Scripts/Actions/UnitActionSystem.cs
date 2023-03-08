@@ -21,6 +21,8 @@ public class UnitActionSystem : MonoBehaviour
     // The layer that the units are on
     [SerializeField] private LayerMask unitLayerMask;
 
+    private bool isBusy;
+
     //* Called when the script instance is being loaded
     private void Awake()
     {
@@ -36,6 +38,10 @@ public class UnitActionSystem : MonoBehaviour
     //* Update is called once per frame
     private void Update()
     {
+        if(isBusy)
+        {
+            return;
+        }
         // When the left mouse is pressed it determines the current unit and then moves the unit to the clicked tile if valid
         if (Input.GetMouseButtonDown(0))
         {
@@ -45,15 +51,18 @@ public class UnitActionSystem : MonoBehaviour
 
             if (selectedUnit.GetMoveAction().IsValidActionGridPosition(mouseGridPosition))
             {
-                selectedUnit.GetMoveAction().Move(mouseGridPosition);
+                SetBusy();
+                selectedUnit.GetMoveAction().Move(mouseGridPosition, ClearBusy);
             }
         }
 
         // When the right mouse is pressed it spins the current unit
         if (Input.GetMouseButtonDown(1))
         {
-            selectedUnit.GetSpinAction().Spin();
+            SetBusy();
+            selectedUnit.GetSpinAction().Spin(ClearBusy);
         }
+
     }
 
     //* Checks to see if the mouse clicks on a unit to select them
@@ -79,6 +88,18 @@ public class UnitActionSystem : MonoBehaviour
         selectedUnit = unit;
 
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    //* Sets the status of the unit that it is currently doing an action
+    private void SetBusy()
+    {
+        isBusy = true;
+    }
+
+    //* Sets the status of the unit to not doing anything currently
+    private void ClearBusy()
+    {
+        isBusy = false;
     }
 
     //* Gets the unit that is currently selected by the player
