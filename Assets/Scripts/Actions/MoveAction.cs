@@ -63,7 +63,7 @@ public class MoveAction : BaseAction
     //* Changes the target vector for the model to move to
     // @param gridPosition the target position that the unit is going to move to
     // @param onActionComplete a delegate for letting the system know that a unit is currently moving
-    public void Move(GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         // Sets the target position
         this.onActionComplete = onActionComplete;
@@ -71,19 +71,8 @@ public class MoveAction : BaseAction
         isActive = true;
     }
 
-    /** 
-    ** Checks to see if the grid position being clicked is valid for movement
-    * @param gridPosition the grid position currently being clicked
-    */
-    public bool IsValidActionGridPosition(GridPosition gridPosition)
-    {
-        // Gets the list of valid grid positions to cross reference
-        List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
-        return validGridPositionList.Contains(gridPosition);
-    }
-
     //* Gathers the valid position that the unit can move to
-    public List<GridPosition> GetValidActionGridPositionList()
+    public override List<GridPosition> GetValidActionGridPositionList()
     {
         // Creating the list for the valid postion to be held in
         List<GridPosition> validGridPositionList = new List<GridPosition>();
@@ -124,5 +113,11 @@ public class MoveAction : BaseAction
         }
 
         return validGridPositionList;
+    }
+
+    //* Returns the name of the action which is Move
+    public override string GetActionName()
+    {
+        return "Move";
     }
 }

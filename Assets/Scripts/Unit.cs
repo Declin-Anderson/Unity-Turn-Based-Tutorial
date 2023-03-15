@@ -17,12 +17,15 @@ public class Unit : MonoBehaviour
     private MoveAction moveAction;
     // Spin action of the unit
     private SpinAction spinAction;
+    // Holds the actions that the unit can do
+    private BaseAction[] baseActionArray;
 
     //* Called when the script instance is being loaded
     private void Awake()
     {
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
+        baseActionArray = GetComponents<BaseAction>();
     }
 
     //* Start is called before the first frame update
@@ -61,5 +64,11 @@ public class Unit : MonoBehaviour
     public GridPosition GetGridPosition()
     {
         return gridPosition;
+    }
+
+    //* Gets the list of actions that this unit can do
+    public BaseAction[] GetBaseActionArray()
+    {
+        return baseActionArray;
     }
 }

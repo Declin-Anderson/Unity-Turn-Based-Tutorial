@@ -21,4 +21,24 @@ public abstract class BaseAction : MonoBehaviour
     {
         unit = GetComponent<Unit>();
     }
+
+    //* Parent function the the children will implement to gather the name of the action
+    public abstract string GetActionName();
+
+    //* Parent function that the children will implement to do their action
+    // @param gridPosition the position that the action will take place
+    // @param onActionComplete the variable keeping track if the function is complete
+    public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+
+    //* Checks to see if the grid position being clicked is valid for movement
+    // @param gridPosition the grid position currently being clicked
+    public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
+    {
+        // Gets the list of valid grid positions to cross reference
+        List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
+        return validGridPositionList.Contains(gridPosition);
+    }
+
+    //* Gathers the valid position that the unit the unit will be able to use for actions
+    public abstract List<GridPosition> GetValidActionGridPositionList();
 }

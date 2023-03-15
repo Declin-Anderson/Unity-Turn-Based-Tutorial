@@ -46,11 +46,31 @@ public class SpinAction : BaseAction
     }
 
     //* Causes the unit that this is ran on to start spinning
+    // @param gridPosition dead variable
     // @param onSpinComplete a delegate for keeping track when the action finishes
-    public void Spin(Action onActionComplete)
+    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         this.onActionComplete = onActionComplete;
         isActive = true;
         totalSpinAmount = 0f;
+    }
+
+    //* Returns the name of the action which is Spin
+    public override string GetActionName()
+    {
+        return "Spin";
+    }
+
+    //* Gathers the valid position that the unit can spin at
+    public override List<GridPosition> GetValidActionGridPositionList()
+    {
+        // Creating the list for the valid postion to be held in
+        List<GridPosition> validGridPositionList = new List<GridPosition>();
+        GridPosition unitGridPosition = unit.GetGridPosition();
+
+        return new List<GridPosition>
+        {
+            unitGridPosition
+        };
     }
 }
