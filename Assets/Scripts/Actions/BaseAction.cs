@@ -41,4 +41,10 @@ public abstract class BaseAction : MonoBehaviour
 
     //* Gathers the valid position that the unit the unit will be able to use for actions
     public abstract List<GridPosition> GetValidActionGridPositionList();
+
+    //* Returns the action point cost of an action with a default of 1 for their cost
+    public virtual int GetActionPointsCost()
+    {
+        return 1;
+    }
 }

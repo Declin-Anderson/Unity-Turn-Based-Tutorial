@@ -32,7 +32,7 @@ public class UnitSelectedVisual : MonoBehaviour
         UpdateVisual();
     }
 
-    //* Calls the update visual method when the unit is selected to turn on the indicator
+    //* Referencing the On Selected Unit Changed Event
     private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs empty)
     {
         UpdateVisual();

@@ -21,6 +21,8 @@ public class UnitActionSystem : MonoBehaviour
     public event EventHandler OnSelectedActionChanged;
     // Grabs the Event Handler that will handle showing and hiding the busy bar
     public event EventHandler<bool> OnBusyChanged;
+    // Grabs the Event Handler that will handle when an action is done
+    public event EventHandler OnActionStarted;
     // Current unit selected by the player
     [SerializeField] private Unit selectedUnit;
     // The layer that the units are on
@@ -70,12 +72,22 @@ public class UnitActionSystem : MonoBehaviour
         {
             GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
-            //* Uses Generic functions for actions to accomdate different choices for actions
-            if(selectedAction.IsValidActionGridPosition(mouseGridPosition))
+            // Checks to see if the grid position is valid
+            if (!selectedAction.IsValidActionGridPosition(mouseGridPosition))
             {
-                SetBusy();
-                selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                return;
             }
+
+            // Checks to see if there is action points to spend
+            if (!selectedUnit.TrySpendActionPointsToTakeAction(selectedAction))
+            {
+                return;
+            }
+
+            SetBusy();
+            selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+
+            OnActionStarted?.Invoke(this, EventArgs.Empty);
 
             /**
             ** Using switch cases to determine what the proper action is when one is selected

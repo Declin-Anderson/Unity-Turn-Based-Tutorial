@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,11 @@ using UnityEngine;
 //* Class for the units that will hold the actions that a unit can do and their movement information
 public class Unit : MonoBehaviour
 {
+    // Max Action Points
+    private const int ACTION_POINTS_MAX = 2;
+
+    public static event EventHandler OnAnyActionPointsChange;
+
     // Position of the unit
     private GridPosition gridPosition;
     // Movement action of the unit
@@ -19,6 +25,8 @@ public class Unit : MonoBehaviour
     private SpinAction spinAction;
     // Holds the actions that the unit can do
     private BaseAction[] baseActionArray;
+    // Number of Action Points an unit has
+    private int actionPoints = ACTION_POINTS_MAX;
 
     //* Called when the script instance is being loaded
     private void Awake()
@@ -33,6 +41,8 @@ public class Unit : MonoBehaviour
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
+
+        TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
     }
 
     //* Update is called once per frame
@@ -70,5 +80,52 @@ public class Unit : MonoBehaviour
     public BaseAction[] GetBaseActionArray()
     {
         return baseActionArray;
+    }
+
+    //* Checks to see if the action points can be spent and then spends if possible
+    public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
+    {
+        if (CanSpendActionPointsToTakeAction(baseAction))
+        {
+            SpendActionPoints(baseAction.GetActionPointsCost());
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //* Returns if you have action points to spend
+    public bool CanSpendActionPointsToTakeAction(BaseAction baseAction)
+    {
+        if (actionPoints >= baseAction.GetActionPointsCost())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    //* Spends action points according to the amount that is given
+    private void SpendActionPoints(int amount)
+    {
+        actionPoints -= amount;
+
+        OnAnyActionPointsChange?.Invoke(this, EventArgs.Empty);
+    }
+
+    //* Gets the action points remaining on this unit
+    public int GetActionPoints()
+    {
+        return actionPoints;
+    }
+
+    //* Referencing the On Turn Changed Event
+    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
+    {
+        actionPoints = ACTION_POINTS_MAX;
+
+        OnAnyActionPointsChange?.Invoke(this, EventArgs.Empty);
     }
 }

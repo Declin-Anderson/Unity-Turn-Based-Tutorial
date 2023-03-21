@@ -31,7 +31,7 @@ public class ActionBusyUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    //* Referencing the On Busy function
+    //* Referencing the On Busy Event
     private void UnitActionSystem_OnBusyChanged(object sender, bool isBusy)
     {
         if (isBusy)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /**
 * Author: Declin Anderson
@@ -17,6 +18,8 @@ public class UnitActionSystemUI : MonoBehaviour
     [SerializeField] private Transform actionButtonPrefab;
     // Reference to the Container of the action buttons
     [SerializeField] private Transform actionButtonContainerTransform;
+    // Reference to the action points counter on screen
+    [SerializeField] private TextMeshProUGUI actionPointsText;
     // List of all the buttons
     private List<ActionButtonUI> actionButtonUIList;
 
@@ -31,7 +34,11 @@ public class UnitActionSystemUI : MonoBehaviour
     {
         UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
         UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+        UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
+        TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+        Unit.OnAnyActionPointsChange += Unit_OnAnyActionPointsChange;
 
+        UpdateActionPoints();
         CreateUnitActionButtons();
         UpdateSelectedVisual();
     }
@@ -48,7 +55,7 @@ public class UnitActionSystemUI : MonoBehaviour
 
         Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
 
-        // Create the buttons for the actions based off our prefabs
+        //* Create the buttons for the actions based off our prefabs
         foreach (BaseAction baseAction in selectedUnit.GetBaseActionArray())
         {
             Transform actionButtonTransform = Instantiate(actionButtonPrefab, actionButtonContainerTransform);
@@ -59,19 +66,24 @@ public class UnitActionSystemUI : MonoBehaviour
         }
     }
 
-    //* Referencing the Selected unit function
-    private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs e) {
-        {
-            CreateUnitActionButtons();
-            UpdateSelectedVisual();
-        }
+    //* Referencing the Selected unit Event
+    private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs e) 
+    {
+        CreateUnitActionButtons();
+        UpdateSelectedVisual();
+        UpdateActionPoints();
     }
 
-    //* Referencing the Selected action function
-    private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e) {
-        {
-            UpdateSelectedVisual();
-        }
+    //* Referencing the Selected action Event
+    private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e) 
+    {
+        UpdateSelectedVisual();
+    }
+
+    //* Referencing the On Action Started Event
+    private void UnitActionSystem_OnActionStarted(object sender, EventArgs e)
+    {
+        UpdateActionPoints();
     }
 
     //* Updates the visuals for the buttons
@@ -81,5 +93,25 @@ public class UnitActionSystemUI : MonoBehaviour
         {
             actionButtonUI.UpdateSelectedVisual();
         }
+    }
+
+    //* Updates the text that tells the player how many action points they have
+    private void UpdateActionPoints()
+    {
+        Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
+
+        actionPointsText.text = "Action Points: " + selectedUnit.GetActionPoints();
+    }
+
+    //* Referencing the On Turn Changed Event
+    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
+    {
+        UpdateActionPoints();
+    }
+
+     //* Referencing the On Any Action Points Change Event
+    private void Unit_OnAnyActionPointsChange(object sender, EventArgs e)
+    {
+        UpdateActionPoints();
     }
 }
