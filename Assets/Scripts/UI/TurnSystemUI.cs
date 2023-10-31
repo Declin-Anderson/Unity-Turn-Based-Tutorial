@@ -18,6 +18,8 @@ public class TurnSystemUI : MonoBehaviour
     [SerializeField] private Button endTurnBtn;
     // Reference to the text that displays the current turn
     [SerializeField] private TextMeshProUGUI turnNumberText;
+    // Reference to the enemy turn banner
+    [SerializeField] private GameObject enemyTurnVisualGameObject;
 
     //* Start is called before the first frame update
     private void Start() 
@@ -30,6 +32,8 @@ public class TurnSystemUI : MonoBehaviour
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
 
         UpdateTurnText();
+        UpdateEnemyTurnVisual();
+        UpdateEndTurnButtonVisibility();
     }
 
     //* Updates the text of the turn number to be the current turn
@@ -42,5 +46,19 @@ public class TurnSystemUI : MonoBehaviour
     private void TurnSystem_OnTurnChanged(object sender, EventArgs e) 
     {
         UpdateTurnText();
+        UpdateEnemyTurnVisual();
+        UpdateEndTurnButtonVisibility();
+    }
+
+    //* Updates the enemy banner to be active only when its the enemy turn
+    private void UpdateEnemyTurnVisual()
+    {
+        enemyTurnVisualGameObject.SetActive(!TurnSystem.Instance.IsPlayerTurn());
+    }
+
+    //* Updates the end turn to be only displayed during player turn
+    private void UpdateEndTurnButtonVisibility()
+    {
+        endTurnBtn.gameObject.SetActive(TurnSystem.Instance.IsPlayerTurn());
     }
 }

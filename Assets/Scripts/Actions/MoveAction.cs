@@ -51,8 +51,7 @@ public class MoveAction : BaseAction
         {
             // Setting the bool for the animator on the unit
             unitAnimator.SetBool("IsWalking", false);
-            isActive = false;
-            onActionComplete();
+            ActionComplete();
         }
 
         // Rotation of the model when it moves to create a smooth transtation between animation states
@@ -66,7 +65,7 @@ public class MoveAction : BaseAction
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         // Sets the target position
-        this.onActionComplete = onActionComplete;
+        ActionStart(onActionComplete);
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
         isActive = true;
     }

@@ -17,6 +17,9 @@ public class Unit : MonoBehaviour
 
     public static event EventHandler OnAnyActionPointsChange;
 
+    // Determines whether this unit is a enemy
+    [SerializeField] private bool isEnemy;
+
     // Position of the unit
     private GridPosition gridPosition;
     // Movement action of the unit
@@ -76,6 +79,12 @@ public class Unit : MonoBehaviour
         return gridPosition;
     }
 
+    //* Gets the world position that the unit is currently at
+    public Vector3 GetWorldPosition()
+    {
+        return transform.position;
+    }
+
     //* Gets the list of actions that this unit can do
     public BaseAction[] GetBaseActionArray()
     {
@@ -124,8 +133,22 @@ public class Unit : MonoBehaviour
     //* Referencing the On Turn Changed Event
     private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
     {
-        actionPoints = ACTION_POINTS_MAX;
+        if (IsEnemy() && !TurnSystem.Instance.IsPlayerTurn() || (!IsEnemy() && TurnSystem.Instance.IsPlayerTurn()))
+        {
+            actionPoints = ACTION_POINTS_MAX;
 
-        OnAnyActionPointsChange?.Invoke(this, EventArgs.Empty);
+            OnAnyActionPointsChange?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    //* Returns the isEnemy variable
+    public bool IsEnemy()
+    {
+        return isEnemy;
+    }
+
+    public void Damage()
+    {
+        Debug.Log(transform + " damaged");
     }
 }

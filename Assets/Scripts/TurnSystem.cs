@@ -18,6 +18,8 @@ public class TurnSystem : MonoBehaviour
     public event EventHandler OnTurnChanged;
     // Current turn the game is on
     private int turnNumber = 1;
+    // Whether it is the player turn or enemy turn
+    private bool isPlayerTurn = true;
 
     //* Called when the script instance is being loaded
     private void Awake()
@@ -35,6 +37,7 @@ public class TurnSystem : MonoBehaviour
     public void NextTurn()
     {
         turnNumber++;
+        isPlayerTurn = !isPlayerTurn;
 
         OnTurnChanged?.Invoke(this, EventArgs.Empty);
     }
@@ -43,5 +46,11 @@ public class TurnSystem : MonoBehaviour
     public int GetTurnNumber()
     {
         return turnNumber;
+    }
+
+    //* Returns the player turn variable
+    public bool IsPlayerTurn()
+    {
+        return isPlayerTurn;
     }
 }

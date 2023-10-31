@@ -40,8 +40,7 @@ public class SpinAction : BaseAction
         // Once the Unit has spun a total of 360 degrees its stops it movement
         if (totalSpinAmount >= 360)
         {
-            isActive = false;
-            onActionComplete();
+            ActionComplete();
         }
     }
 
@@ -50,8 +49,7 @@ public class SpinAction : BaseAction
     // @param onSpinComplete a delegate for keeping track when the action finishes
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
-        isActive = true;
+        ActionStart(onActionComplete);
         totalSpinAmount = 0f;
     }
 

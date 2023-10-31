@@ -57,6 +57,10 @@ public class UnitActionSystem : MonoBehaviour
             return;
         }
 
+        if (!TurnSystem.Instance.IsPlayerTurn())
+        {
+            return;
+        }
         
         // When the left mouse is pressed it determines if it is a valid click
         if (EventSystem.current.IsPointerOverGameObject()) return;
@@ -125,6 +129,12 @@ public class UnitActionSystem : MonoBehaviour
                     if(unit == selectedUnit)
                     {
                         // Unit is already selected
+                        return false;
+                    }
+
+                    if (unit.IsEnemy())
+                    {
+                        // Clicked on an enemy
                         return false;
                     }
                     SetSelectedUnit(unit);
