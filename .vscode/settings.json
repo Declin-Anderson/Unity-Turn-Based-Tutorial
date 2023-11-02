@@ -105,4 +105,5 @@
             "gutterIcon": true
         }
     },
+    "dotnet.defaultSolution": "Unity-Turn-Based-Tutorial.sln",
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine.Utility;
 using UnityEngine;
 
 /**
@@ -22,6 +23,8 @@ public class Unit : MonoBehaviour
 
     // Position of the unit
     private GridPosition gridPosition;
+    // Health of the Unit
+    private HealthSystem healthSystem;
     // Movement action of the unit
     private MoveAction moveAction;
     // Spin action of the unit
@@ -34,6 +37,7 @@ public class Unit : MonoBehaviour
     //* Called when the script instance is being loaded
     private void Awake()
     {
+        healthSystem = GetComponent<HealthSystem>();
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
@@ -46,6 +50,8 @@ public class Unit : MonoBehaviour
         LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
 
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+
+        healthSystem.onDead += HealthSystem_OnDead;
     }
 
     //* Update is called once per frame
@@ -147,8 +153,17 @@ public class Unit : MonoBehaviour
         return isEnemy;
     }
 
-    public void Damage()
+    //* Calls the damage function in health system according to amount taken
+    public void Damage(int damageAmount)
     {
-        Debug.Log(transform + " damaged");
+        healthSystem.Damage(damageAmount);
+    }
+
+    //* Event listener for when the unit dies
+    public void HealthSystem_OnDead(object sender, EventArgs e)
+    {
+        LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
+
+        Destroy(gameObject);
     }
 }

@@ -12,8 +12,8 @@ using UnityEngine;
 //* Handles the movement of a unit when the move action is taken by them
 public class MoveAction : BaseAction
 {
-    // Getting the reference of the Animator
-    [SerializeField] private Animator unitAnimator;
+    public event EventHandler OnStartMoving;
+    public event EventHandler OnStopMoving;
     // Max movement range of a the unit
     [SerializeField] private int maxMoveDistance = 4;
     // Target Spot for the model to move to
@@ -44,13 +44,10 @@ public class MoveAction : BaseAction
             // Determining the direction and the speed that the unit shall reach its end goal
             float moveSpeed = 4f;
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
-            // Setting the bool for the animator on the unit
-            unitAnimator.SetBool("IsWalking", true);
         }
         else
         {
-            // Setting the bool for the animator on the unit
-            unitAnimator.SetBool("IsWalking", false);
+            OnStopMoving?.Invoke(this, EventArgs.Empty);
             ActionComplete();
         }
 
@@ -67,7 +64,8 @@ public class MoveAction : BaseAction
         // Sets the target position
         ActionStart(onActionComplete);
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
-        isActive = true;
+        
+        OnStartMoving?.Invoke(this, EventArgs.Empty);
     }
 
     //* Gathers the valid position that the unit can move to

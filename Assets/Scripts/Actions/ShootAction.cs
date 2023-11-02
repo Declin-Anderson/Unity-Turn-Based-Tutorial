@@ -6,6 +6,13 @@ using UnityEngine;
 //* Handles the Shoot Action for Units
 public class ShootAction : BaseAction
 {
+    public event EventHandler<OnShootEventArgs> OnShoot;
+
+    public class OnShootEventArgs : EventArgs
+    {
+        public Unit targetUnit;
+        public Unit shootingUnit;
+    }
     // State Machine for phases of Shooting
     private enum State
     {
@@ -83,7 +90,11 @@ public class ShootAction : BaseAction
     // Performs the shoot
     private void Shoot()
     {
-        targetUnit.Damage();
+        OnShoot?.Invoke(this, new OnShootEventArgs{
+            targetUnit = targetUnit,
+            shootingUnit = unit
+        });
+        targetUnit.Damage(40);
     }
 
     //* Gets the name of the action
