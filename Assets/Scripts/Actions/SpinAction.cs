@@ -49,8 +49,9 @@ public class SpinAction : BaseAction
     // @param onSpinComplete a delegate for keeping track when the action finishes
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        ActionStart(onActionComplete);
         totalSpinAmount = 0f;
+
+        ActionStart(onActionComplete);
     }
 
     //* Returns the name of the action which is Spin
